@@ -1,0 +1,200 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarkSheet SY 2023-24</title>
+    <style>
+        /* Add your custom styles here */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #output {
+            margin-top: 20px;
+            display: none;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<form id="marksheetForm">
+    <label for="name">Student Name:</label>
+    <input type="text" id="name" required>
+    <label for="prn">PRN:</label>
+    <input type="text" id="prn" required>
+    
+    
+
+    <label for="DBMS">DBMS Marks:</label>
+    <input type="number" id="subject1" required>
+
+    <label for="CSO">CSO Marks:</label>
+    <input type="number" id="subject2" required>
+
+    <label for="FDC">FDC Marks:</label>
+    <input type="number" id="subject3" required>
+    
+    <label for="PP">PP Marks:</label>
+    <input type="number" id="subject4" required>
+
+    <label for="CG">CG Marks:</label>
+    <input type="number" id="subject5" required>
+
+    <button type="button" onclick="generateMarksheet()">Generate Marksheet</button>
+</form>
+
+<div id="output">
+    <h2>Marksheet for <span id="outputName"></span></h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Marks Obtained</th>
+            </tr>
+        </thead>
+        <tbody id="marksheetTableBody"></tbody>
+    </table>
+    <p>CGPA: <span id="outputCGPA"></span></p>
+    <a href="#" id="downloadLink" download="MarkSheet.pdf">Download Marksheet</a>
+</div>
+
+<script>
+    function generateMarksheet() {
+        const name = document.getElementById("name").value;
+        const prn = document.getElementById("prn").value;
+        
+        const subject1 = parseFloat(document.getElementById("subject1").value);
+        const subject2 = parseFloat(document.getElementById("subject2").value);
+        const subject3 = parseFloat(document.getElementById("subject3").value);
+        const subject4 = parseFloat(document.getElementById("subject4").value);
+        const subject5 = parseFloat(document.getElementById("subject5").value);
+
+        // Calculate CGPA
+        const totalMarks = subject1 + subject2 + subject3 + subject4 + subject5;
+        const cgpa = totalMarks / 30 * 4; // Assuming maximum marks for each subject is 10
+
+        // Display the marksheet
+        document.getElementById("outputName").innerText = name;
+        document.getElementById("outputCGPA").innerText = cgpa.toFixed(2);
+
+        // Display the marksheet table
+        const marksheetTableBody = document.getElementById("marksheetTableBody");
+        marksheetTableBody.innerHTML = `
+            <tr>
+                <td>DBMS</td>
+                <td>${subject1}</td>
+            </tr>
+            <tr>
+                <td>CSO</td>
+                <td>${subject2}</td>
+            </tr>
+            <tr>
+                <td>FDC</td>
+                <td>${subject3}</td>
+            </tr>
+            <tr>
+                <td>PP</td>
+                <td>${subject4}</td>
+            </tr>
+            <tr>
+                <td>CG</td>
+                <td>${subject5}</td>
+            </tr>
+        `;
+
+        // Show the marksheet and download link
+        document.getElementById("output").style.display = "block";
+
+        // Prepare the marksheet for download
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.href = "data:text/plain;charset=utf-8," + encodeURIComponent(getMarksheetText(name, prn, subject1, subject2, subject3, subject4, subject5, cgpa));
+        downloadLink.style.display = "block";
+    }
+
+    function getMarksheetText(name, prn, subject1, subject2, subject3, subject4, subject5, cgpa) {
+        return `Student Name: ${name}
+PRN: ${prn}
+Subject 1 (DBMS) Marks: ${subject1}
+Subject 2 (CSO) Marks: ${subject2}
+Subject 3 (FDC) Marks: ${subject3}
+Subject 4 (PP) Marks: ${subject4}
+Subject 5 (CG) Marks: ${subject5}
+
+CGPA: ${cgpa.toFixed(2)}`;
+    }
+</script>
+
+</body>
+</html>

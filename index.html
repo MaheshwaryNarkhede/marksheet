@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marksheet 2023-24</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Marksheet 2023-24</h1>
+    
+    <style>
+        /* Add your custom styles here */
+        body {
+            background-color: #f8f9fa;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        #emoji {
+            font-size: 50px;
+        }
+
+        #startButton, #goToMarkSheetButton {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="emojiPanel">
+    <div id="emoji">😊</div>
+    <p>Do you want to generate a marksheet?</p>
+    <button id="startButton" onclick="redirectToMarksheet()">Yes, Let's Start!</button>
+    <button id="goToMarkSheetButton" onclick="goToMarkSheet()" style="display: none;">Go to Mark Sheet</button>
+</div>
+
+<script>
+    // Check if the user has already made a choice
+    var userChoice = localStorage.getItem('userChoice');
+
+    if (userChoice === 'yes') {
+        showGoToMarkSheetButton();
+    }
+
+    function redirectToMarksheet() {
+        localStorage.setItem('userChoice', 'yes');
+        showGoToMarkSheetButton();
+    }
+
+    function showGoToMarkSheetButton() {
+        document.getElementById('startButton').style.display = 'none';
+        document.getElementById('goToMarkSheetButton').style.display = 'inline-block';
+    }
+
+    function goToMarkSheet() {
+        window.location.href = 'm.html';
+    }
+</script>
+
+
+</body>
+</html>
