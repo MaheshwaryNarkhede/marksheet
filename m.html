@@ -85,116 +85,139 @@
             display: inline-block;
             margin-top: 10px;
         }
+        #marksheetForm button {
+    display: inline-block;
+    margin-right: 10px; /* Adjust the margin as needed */
+}
+
+#marksheetForm {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#marksheetForm button {
+    flex: 1;
+    margin: 5px; /* Adjust the margin as needed */
+}
+
+       
+
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-<form id="marksheetForm">
-    <label for="name">Student Name:</label>
-    <input type="text" id="name" required>
-    <label for="prn">PRN:</label>
-    <input type="text" id="prn" required>
+        <form id="marksheetForm">
+            <label for="name">Student Name:</label>
+            <input type="text" id="name" required>
+            <label for="prn">PRN:</label>
+            <input type="text" id="prn" required>
     
+            <label for="DBMS">DBMS Marks:</label>
+            <input type="number" id="subject1" required>
     
-
-    <label for="DBMS">DBMS Marks:</label>
-    <input type="number" id="subject1" required>
-
-    <label for="CSO">CSO Marks:</label>
-    <input type="number" id="subject2" required>
-
-    <label for="FDC">FDC Marks:</label>
-    <input type="number" id="subject3" required>
+            <label for="CSO">CSO Marks:</label>
+            <input type="number" id="subject2" required>
     
-    <label for="PP">PP Marks:</label>
-    <input type="number" id="subject4" required>
-
-    <label for="CG">CG Marks:</label>
-    <input type="number" id="subject5" required>
-
-    <button type="button" onclick="generateMarksheet()">Generate Marksheet</button>
-</form>
-
-<div id="output">
-    <h2>Marksheet for <span id="outputName"></span></h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Subject</th>
-                <th>Marks Obtained</th>
-            </tr>
-        </thead>
-        <tbody id="marksheetTableBody"></tbody>
-    </table>
-    <p>CGPA: <span id="outputCGPA"></span></p>
-    <a href="#" id="downloadLink" download="MarkSheet.pdf">Download Marksheet</a>
-</div>
-
-<script>
-    function generateMarksheet() {
-        const name = document.getElementById("name").value;
-        const prn = document.getElementById("prn").value;
-        
-        const subject1 = parseFloat(document.getElementById("subject1").value);
-        const subject2 = parseFloat(document.getElementById("subject2").value);
-        const subject3 = parseFloat(document.getElementById("subject3").value);
-        const subject4 = parseFloat(document.getElementById("subject4").value);
-        const subject5 = parseFloat(document.getElementById("subject5").value);
-
-        // Calculate CGPA
-        const totalMarks = subject1 + subject2 + subject3 + subject4 + subject5;
-        const cgpa = totalMarks / 30 * 4; // Assuming maximum marks for each subject is 10
-
-        // Display the marksheet
-        document.getElementById("outputName").innerText = name;
-        document.getElementById("outputCGPA").innerText = cgpa.toFixed(2);
-
-        // Display the marksheet table
-        const marksheetTableBody = document.getElementById("marksheetTableBody");
-        marksheetTableBody.innerHTML = `
-            <tr>
-                <td>DBMS</td>
-                <td>${subject1}</td>
-            </tr>
-            <tr>
-                <td>CSO</td>
-                <td>${subject2}</td>
-            </tr>
-            <tr>
-                <td>FDC</td>
-                <td>${subject3}</td>
-            </tr>
-            <tr>
-                <td>PP</td>
-                <td>${subject4}</td>
-            </tr>
-            <tr>
-                <td>CG</td>
-                <td>${subject5}</td>
-            </tr>
-        `;
-
-        // Show the marksheet and download link
-        document.getElementById("output").style.display = "block";
-
-        // Prepare the marksheet for download
-        const downloadLink = document.getElementById("downloadLink");
-        downloadLink.href = "data:text/plain;charset=utf-8," + encodeURIComponent(getMarksheetText(name, prn, subject1, subject2, subject3, subject4, subject5, cgpa));
-        downloadLink.style.display = "block";
-    }
-
-    function getMarksheetText(name, prn, subject1, subject2, subject3, subject4, subject5, cgpa) {
-        return `Student Name: ${name}
-PRN: ${prn}
-Subject 1 (DBMS) Marks: ${subject1}
-Subject 2 (CSO) Marks: ${subject2}
-Subject 3 (FDC) Marks: ${subject3}
-Subject 4 (PP) Marks: ${subject4}
-Subject 5 (CG) Marks: ${subject5}
-
-CGPA: ${cgpa.toFixed(2)}`;
-    }
-</script>
-
-</body>
-</html>
+            <label for="FDC">FDC Marks:</label>
+            <input type="number" id="subject3" required>
+    
+            <label for="PP">PP Marks:</label>
+            <input type="number" id="subject4" required>
+    
+            <label for="CG">CG Marks:</label>
+            <input type="number" id="subject5" required>
+    
+            <button type="button" onclick="generateMarksheet()">Generate Marksheet</button>
+            <button type="button" onclick="printMarksheet()">Print Marksheet</button>
+            <button type="button" onclick="downloadMarksheet()">Download Marksheet</button>
+        </form>
+    
+        <div id="output">
+            <h2>Marksheet for <span id="outputName"></span></h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Marks Obtained</th>
+                    </tr>
+                </thead>
+                <tbody id="marksheetTableBody"></tbody>
+            </table>
+            <p>CGPA: <span id="outputCGPA"></span></p>
+            <a href="#" id="downloadLink" style="display: none;">Download Marksheet</a>
+        </div>
+    
+        <script>
+            function generateMarksheet() {
+                const name = document.getElementById("name").value;
+                const prn = document.getElementById("prn").value;
+    
+                const subject1 = parseFloat(document.getElementById("subject1").value);
+                const subject2 = parseFloat(document.getElementById("subject2").value);
+                const subject3 = parseFloat(document.getElementById("subject3").value);
+                const subject4 = parseFloat(document.getElementById("subject4").value);
+                const subject5 = parseFloat(document.getElementById("subject5").value);
+    
+                // Calculate CGPA
+                const totalMarks = subject1 + subject2 + subject3 + subject4 + subject5;
+                const cgpa = totalMarks / 50 * 4; // Assuming maximum marks for each subject is 10 and total marks is 50
+    
+                // Display the marksheet
+                document.getElementById("outputName").innerText = name;
+                document.getElementById("outputCGPA").innerText = cgpa.toFixed(2);
+    
+                // Display the marksheet table
+                const marksheetTableBody = document.getElementById("marksheetTableBody");
+                marksheetTableBody.innerHTML = `
+                    <tr>
+                        <td>DBMS</td>
+                        <td>${subject1}</td>
+                    </tr>
+                    <tr>
+                        <td>CSO</td>
+                        <td>${subject2}</td>
+                    </tr>
+                    <tr>
+                        <td>FDC</td>
+                        <td>${subject3}</td>
+                    </tr>
+                    <tr>
+                        <td>PP</td>
+                        <td>${subject4}</td>
+                    </tr>
+                    <tr>
+                        <td>CG</td>
+                        <td>${subject5}</td>
+                    </tr>
+                `;
+            }
+    
+            function printMarksheet() {
+                window.print();
+            }
+    
+            function downloadMarksheet() {
+                const name = document.getElementById('name').value;
+                const prn = document.getElementById('prn').value;
+                const subject1Marks = document.getElementById('subject1').value;
+                const subject2Marks = document.getElementById('subject2').value;
+                const subject3Marks = document.getElementById('subject3').value;
+                const subject4Marks = document.getElementById('subject4').value;
+                const subject5Marks = document.getElementById('subject5').value;
+    
+                const content = `Name: ${name}\nPRN: ${prn}\nSubject 1: ${subject1Marks}\nSubject 2: ${subject2Marks}\nSubject 3: ${subject3Marks}\nSubject 4: ${subject4Marks}\nSubject 5: ${subject5Marks}\n`;
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+    
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'marksheet.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        </script>
+    </body>
+    </html>
+    
